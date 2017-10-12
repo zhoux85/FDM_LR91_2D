@@ -1,5 +1,10 @@
-// BarModel1.cpp : 定义控制台应用程序的入口点。
-//
+/* Method 1 for 2D LR91 */
+/* 5-point centered finite difference, not include operator splitting and ADI method. */
+/* ref: An Advanced Algorithm for Solving Partial Differential Equation in Cardiac Conduction. 1999. */
+/* some parameters of the Phase I Luo–Rudy action potential model to achieve a stable period-1 spiral wave. 
+   The rate constants of gate d, f and X are increased by 50 times, to reduce the APD from 360ms to 45.7ms, since the 
+   wavelength of LR91 is too long for the small tissue size 200*200.*/
+/* Xiang Zhou, 2017/10/12 */
 
 #include "stdafx.h"
 #include <iostream>
