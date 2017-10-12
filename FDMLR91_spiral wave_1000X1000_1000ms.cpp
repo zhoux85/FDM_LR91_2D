@@ -1,5 +1,7 @@
-// BarModel1.cpp : 定义控制台应用程序的入口点。
-//
+/* Method 1 for 2D LR91 */
+/* 5-point centered finite difference, not include operator splitting and ADI method. */
+/* ref: An Advanced Algorithm for Solving Partial Differential Equation in Cardiac Conduction. 1999. */
+/* Xiang Zhou, 2017/10/12 */
 
 #include "stdafx.h"
 #include <iostream>
