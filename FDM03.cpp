@@ -204,11 +204,11 @@ int main(int argc, char* argv[])
 			//****no flux boundary conditions*****
 			V[i][0] = V[i][1];
 			V[i][ny + 1] = V[i][ny];
-			for (j = 1; j < ny + 1; j++){
-				V[0][j] = V[1][j];
-				V[nx + 1][j] = V[nx][j];
-			}
 		}
+		for (j = 1; j < ny + 1; j++){
+			V[0][j] = V[1][j];
+			V[nx + 1][j] = V[nx][j];
+		}		
 
 		//**** save data in file "ap"
 		int fileflag = 0;
