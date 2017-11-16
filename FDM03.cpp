@@ -7,7 +7,7 @@ The rate constants of gate d, f and X are increased by 50 times, to reduce the A
 wavelength of LR91 is too long for the small tissue size 200*200.*/
 /* Xiang Zhou, 2017/10/12 */
 
-#include "stdafx.h"
+//#include "stdafx.h"
 #include <iostream>
 #include <iomanip>
 #include <math.h>
@@ -21,7 +21,7 @@ double dx = 0.015, dy = 0.015;//space step, 3cm*3cm
 double D = 0.001;//D: diffusion coefficient cm^2/ms
 
 /* Time Step */
-double dt_max = 0.04; // Time step (ms)
+double dt_max = 0.02; // Time step (ms)
 double dt_min = 0.001;
 double dt;
 double t; // Time (ms)
@@ -187,6 +187,18 @@ int main(int argc, char* argv[])
 
 	clock_t start, end;
 	start = clock();
+
+	// for ADI of step 1 and 3
+	double belta[nx + 1];
+	double eta = dt_max*D / (dx*dx);
+	double b = 1 + eta;
+	double b_1 = 1 + eta / 2;//take care the boundary value
+	double b_n = 1 + eta / 2;//take care the boundary value
+	double c = -eta / 2;
+	double a = -eta / 2;
+	double f[nx + 1][ny + 1];
+	double y_temp[nx + 1];
+
 	for (ncount = 0; ncount <= 160/dt_max; ncount++){//simulation time is 160ms
 		for (i = 1; i < nx + 1; i++){
 			//****no flux boundary conditions*****
@@ -224,14 +236,6 @@ int main(int argc, char* argv[])
 		//**** save data in file "ap"
 
 		//*********** step 1,  --- sweep in x-direction, Thomas algorithm used to solve tridiagonal linear equations ADI method*******
-		double belta[nx + 1];
-		double eta = dt_max*D / (dx*dx);
-		double b = 1+eta;
-		double c = -eta/2;
-		double c_1 = -eta;
-		double a = c;
-		double a_n = c_1;
-		double f[nx + 1][ny + 1];
 		for (j = 1; j < ny + 1; j++){
 			for (i = 1; i < nx + 1; i++){
 				if (j==1){
@@ -268,13 +272,13 @@ int main(int argc, char* argv[])
 
 		double y_temp[nx + 1];
 		for (j = 1; j < ny + 1; j++){
-			belta[1] = c_1 / b;
-			y_temp[1] = f[1][j] / b;
+			belta[1] = c / b_1;
+			y_temp[1] = f[1][j] / b_1;
 			for (i = 2; i < nx; i++){ //i = 2,3,...,n-1
 				belta[i] = c/(b-a*belta[i-1]);
 				y_temp[i] = (f[i][j] - a*y_temp[i - 1]) / (b-a*belta[i-1]);
 			}
-			y_temp[nx] = (f[nx][j] - a_n*y_temp[nx - 1]) / (b - a_n*belta[nx - 1]);
+			y_temp[nx] = (f[nx][j] - a*y_temp[nx - 1]) / (b_n - a*belta[nx - 1]);
 			V[nx][j] = y_temp[nx];
 			for (i = nx-1; i >=1; i--){
 				V[i][j] = y_temp[i] - belta[i] * V[i+1][j];
@@ -329,13 +333,6 @@ int main(int argc, char* argv[])
 		//*********** step 2 *******
 
 		//*********** step 3, sweep in y-direction, Thomas algorithm used to solve tridiagonal linear equations ADI method*******
-		belta[nx + 1];
-		eta = dt_max*D / (dy*dy);
-		b = 1 + eta;
-		c = -eta / 2;
-		c_1 = -eta;
-		a = c;
-		a_n = c_1;
 		for (i = 1; i < nx + 1; i++){
 			for (j = 1; j < ny + 1; j++){
 				if (i==1){
@@ -350,13 +347,13 @@ int main(int argc, char* argv[])
 
 		y_temp[nx + 1] ;
 		for (i = 1; i < nx + 1; i++){
-			belta[1] = c_1 / b;
-			y_temp[1] = f[i][1] / b;
+			belta[1] = c / b_1;
+			y_temp[1] = f[i][1] / b_1;
 			for (j = 2; j < ny; j++){ 
 				belta[j] = c / (b - a*belta[j - 1]);
 				y_temp[j] = (f[i][j] - a*y_temp[j - 1]) / (b - a*belta[j - 1]);
 			}
-			y_temp[ny] = (f[i][ny] - a_n*y_temp[ny - 1]) / (b - a_n*belta[ny - 1]);
+			y_temp[ny] = (f[i][ny] - a*y_temp[ny - 1]) / (b_n - a*belta[ny - 1]);
 			V[i][ny] = y_temp[ny];
 			for (j = ny - 1; j >= 1; j--){
 				V[i][j] = y_temp[j] - belta[j] * V[i][j + 1];
