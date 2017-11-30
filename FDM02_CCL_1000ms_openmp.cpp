@@ -1,11 +1,9 @@
-/* Method 2 for 2D LR91 */
+/* Method 2 for 2D LR91,OpenMP support */
 /* Operator splitting + FDM for PDE
-adaptive time step for ODE */
+   CCL for ODE */
 /* ref: An Advanced Algorithm for Solving Partial Differential Equation in Cardiac Conduction. 1999. */
-/* some parameters of the Phase I Luo¨CRudy action potential model to achieve a stable period-1 spiral wave.
-The rate constants of gate d, f and X are increased by 50 times, to reduce the APD from 360ms to 45.7ms, since the
-wavelength of LR91 is too long for the small tissue size 200*200.*/
-/* Xiang Zhou, 2017/10/26 */
+/* ref: Quadratic adaptive algorithm for solving cardiac action potential models. 2016*/
+/* Xiang Zhou, 2017/11/30 */
 
 //#include "stdafx.h"
 #include <iostream>
@@ -23,7 +21,7 @@ double dx = 0.015, dy = 0.015;//space step, 3cm*3cm
 double D = 0.001;//D: diffusion coefficient cm^2/ms
 
 /* Time Step */
-double dt_max = 0.1; // Time step (ms)
+double dt_max = 0.04; // Time step (ms)
 double dt_min = 0.001;
 double dt[nx + 1][nx + 1];
 double t; // Time (ms)
