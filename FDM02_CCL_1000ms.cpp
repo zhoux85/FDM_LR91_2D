@@ -411,14 +411,14 @@ double CCL(int i, int j, double dt){
 		if (D2V[i][j]>0){
 			dtz = -dVdt[i][j] / D2V[i][j];
 			if (DiscriminantN >= 0){
-				dt = (-dVdt[i][j] - sqrt(DiscriminantP)) / D2V[i][j];
+				dt = (-dVdt[i][j] - sqrt(DiscriminantN)) / D2V[i][j];
 			}
 			else{
 				dt = dtz;
 			}
 		}
 		else if (D2V[i][j]<0){
-			dt = (-dVdt[i][j] - sqrt(DiscriminantP)) / D2V[i][j];
+			dt = (-dVdt[i][j] - sqrt(DiscriminantN)) / D2V[i][j];
 		}
 	}
 
